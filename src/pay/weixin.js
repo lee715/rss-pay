@@ -2,6 +2,7 @@ const config = require('config')
 const fs = require('fs')
 const uuid = require('uuid')
 const WxPay = require('weixin-pay')
+const wxPayUtil = require('weixin-pay/lib/util')
 
 const { mch_id, appid, body, detail, total_fee, key } = config.weixin
 const {ip, host} = config
@@ -14,6 +15,34 @@ const wxpay = WxPay({
 })
 
 module.exports = {
+  wxXmlMw: async (ctx, next) => {
+    ctx.wxSucc = () => {
+      ctx.type = 'xml'
+      ctx.body = wxPayUtil.buildXML({ xml: { return_code: 'SUCCESS' } })
+    }
+    ctx.wxFail = () => {
+      ctx.type = 'xml'
+      ctx.body = wxPayUtil.buildXML({ xml: { return_code: 'FAIL' } })
+    }
+    await new Promise((resolve, reject) => {
+      wxPayUtil.pipe(ctx.req, (err, data) => {
+        if (err) return reject(err)
+        resolve(data)
+      })
+    }).then((data) => {
+      let xml = data.toString('utf8')
+      return new Promise((resolve, reject) => {
+        wxPayUtil.parseXML(xml, function (err, msg) {
+          if (err) return reject(err)
+          ctx.wxMsg = msg
+          resolve(msg)
+        })
+      })
+    }).catch((err) => {
+      next(err)
+    })
+    await next()
+  },
 
   refund: async (order, money) => {
     let param = {
@@ -79,7 +108,9 @@ module.exports = {
         }
       })
     })
-  }
+  },
+
+  sign: wxpay.sign.bind(wxpay)
 }
 
 function wxDate (date) {

@@ -3,6 +3,7 @@ const qs = require('querystring')
 const urllib = require('urllib')
 const db = require('limbo').use('anmoyi')
 const wxSrv = require('../pay/weixin')
+const sockSrv = require('../service/socket')
 
 exports.getAuth = async ctx => {
   let {uid} = ctx.query
@@ -11,7 +12,7 @@ exports.getAuth = async ctx => {
     response_type: 'code',
     scope: 'snsapi_base',
     state: 'snsapi_base',
-    redirect_uri: `${config.host}/api/wx/oauthcode?uid=${uid}`
+    redirect_uri: `${config.host}/api/oauthcode?uid=${uid}`
   }
   ctx.redirect(`${config.weixin.authUrl}?${qs.stringify(data)}`)
 }
@@ -24,9 +25,8 @@ exports.getCode = async ctx => {
     code: code,
     grant_type: 'authorization_code'
   }
-  let rt = await urllib.request(`${config.weixin.tokenUrl}?${qs.stringify(data)}`, {json: true})
-  console.log(rt)
-  ctx.redirect(`${config.host}/${config.h5pay}?uid=${uid}&openId=${rt.openid}`)
+  let rt = await urllib.request(`${config.weixin.tokenUrl}?${qs.stringify(data)}`, {dataType: 'json'})
+  ctx.redirect(`${config.host}/${config.h5pay}?uid=${uid}&openId=${rt.data.openid}`)
 }
 
 exports.getPreArgs = async ctx => {
@@ -41,14 +41,57 @@ exports.getPreArgs = async ctx => {
 
 exports.payIndex = async ctx => {
   let {uid, openId} = ctx.query
-  // let device = await db.device.findByUid(uid)
-  await ctx.render('pay', {
-    uid,
-    openId,
-    time: [2, 5],
-    price: [1, 2],
-    placeName: 'test',
-    name: 'test',
-    status: 'idle'
-  })
+  let device = await db.device.findByUid(uid)
+  let payInfo = await device.getPayInfo()
+  payInfo.openId = openId
+  try {
+    await device.isReady()
+  } catch (e) {
+    e.type = 'payIndex:check'
+    console.error(e)
+    payInfo.status = 'fault'
+  }
+  await ctx.render('pay', payInfo)
+}
+
+// { appid: 'wxf52adc6b55f21cd5',
+// 0|app      |   bank_type: 'CFT',
+// 0|app      |   cash_fee: '1',
+// 0|app      |   fee_type: 'CNY',
+// 0|app      |   is_subscribe: 'N',
+// 0|app      |   mch_id: '1500195282',
+// 0|app      |   nonce_str: '4h5bQCjgPh5SD5SqNWrngEMLxw7FoE1i',
+// 0|app      |   openid: 'orer70rQpj1XDnLW0KMsqHQpamGM',
+// 0|app      |   out_trade_no: '5af920137ecb7d5bd8d15b63',
+// 0|app      |   result_code: 'SUCCESS',
+// 0|app      |   return_code: 'SUCCESS',
+// 0|app      |   sign: '2372374FD0694F0E3EE1C839AB7BEDFE',
+// 0|app      |   time_end: '20180514133523',
+// 0|app      |   total_fee: '1',
+// 0|app      |   trade_type: 'JSAPI',
+// 0|app      |   transaction_id: '4200000128201805149185036808' }
+exports.payNotify = async ctx => {
+  let {wxSucc, wxMsg} = ctx
+  console.log(wxMsg)
+  if (wxSrv.sign(wxMsg) !== wxMsg.sign) ctx.throw(403)
+  if (wxMsg.result_code !== 'SUCCESS') return wxSucc()
+  let _orderId = wxMsg.out_trade_no
+  let order = await db.order.findById(_orderId).exec()
+  if (!order) {
+    console.log(`payNotify:order not found: ${JSON.stringify(wxMsg)}`)
+    return wxSucc()
+  }
+  // 已处理，重复消息
+  if (order.isPayed()) return wxSucc()
+  try {
+    await order.switchPayStatus(1)
+    await sockSrv.start(order.uid, order.time)
+    await order.switchDeviceStatus(1)
+    wxSucc()
+  } catch (e) {
+    e.type = 'payNotify-error'
+    console.error(e)
+    await wxSrv.refund(_orderId, order.money)
+    wxSucc()
+  }
 }

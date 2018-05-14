@@ -13,10 +13,9 @@ sneaky('ay', function () {
 + yarn.lock
 + package.json
 + app.js
-+ apiclient_cert.p12
 - *
 `
-  this.after('yarn && pm2 restart bk-wx')
+  this.after('yarn && pm2 restart app')
   this.overwrite = true
   this.nochdir = true
 })

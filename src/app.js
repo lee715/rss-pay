@@ -6,6 +6,7 @@ const ejs = require('koa-ejs')
 const path = require('path')
 const bodyParser = require('koa-bodyparser')
 const rawMidd = require('./middleware/raw')
+const staticSrv = require('koa-static-server')
 
 require('./service/vfw')
 
@@ -13,6 +14,7 @@ const app = new Koa()
 
 app
   .use(bodyParser())
+  .use(staticSrv({rootDir: 'static', rootPath: '/static'}))
   .use(rawMidd)
 
 ejs(app, {

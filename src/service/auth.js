@@ -7,7 +7,6 @@ exports.accessMw = async (ctx, next) => {
 }
 
 exports.accessRootMw = async (ctx, next) => {
-  console.log(ctx.session)
   if (ctx.session.role !== 'root') ctx.throw(403)
   await next()
 }

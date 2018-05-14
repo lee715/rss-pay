@@ -36,5 +36,28 @@ module.exports = function (Schema) {
   Order.statics.init = function (data) {
     return this.create(data)
   }
+
+  Order.statics.switchPayStatus = function (status) {
+    switch (status) {
+      case 1:
+        return this.update({status: 'SUCCESS'}).exec()
+      case 0:
+        return this.update({status: 'PREPAY'}).exec()
+    }
+  }
+
+  Order.statics.switchDeviceStatus = function (status) {
+    switch (status) {
+      case 1:
+        return this.update({serviceStatus: 'STARTED'}).exec()
+      case 0:
+        return this.update({serviceStatus: 'BEFORE'}).exec()
+    }
+  }
+
+  Order.statics.isPayed = function () {
+    return this.status === 'SUCCESS'
+  }
+
   return Order
 }

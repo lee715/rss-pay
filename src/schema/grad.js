@@ -17,5 +17,14 @@ module.exports = function (Schema) {
   Grad.statics.getAll = function () {
     return this.find({}).exec()
   }
+
+  Grad.statics.getTimes = function () {
+    return this.time.split(',')
+  }
+
+  Grad.statics.getPrices = function () {
+    return this.price.split(',')
+  }
+
   return Grad
 }

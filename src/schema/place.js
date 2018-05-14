@@ -22,6 +22,7 @@ module.exports = function (Schema) {
     },
     // 代理商id
     _agentId: Schema.Types.ObjectId,
+    _gradId: Schema.Types.ObjectId,
     agentMode: {
       type: String,
       default: 'percent'
@@ -51,6 +52,14 @@ module.exports = function (Schema) {
     })
   Place.statics.batch = function () {
     return this.find({}).exec()
+  }
+  Place.statics.getFullInfo = async () => {
+    const GradModel = this.model('grad')
+    let res = this.toJSON()
+    let grad = await GradModel.getById(this._gradId).exec()
+    res.times = grad.getTimes()
+    res.prices = grad.getPrices()
+    return res
   }
   return Place
 }

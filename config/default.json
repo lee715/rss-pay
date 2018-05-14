@@ -1,15 +1,16 @@
 {
-  "port": 8000,
+  "port": 80,
   "host": "http://www.ups-aiyan.com",
   "ip": "47.74.252.32",
   "weixin": {
     "mch_id": "1500195282",
     "appid": "wxf52adc6b55f21cd5",
+    "key": "bc49dcee7e7ac85df1d2ef6f758560ae",
     "secret": "bc49dcee7e7ac85df1d2ef6f758560ae",
     "total_fee": 5,
     "body": "按摩椅",
     "authUrl": "https://open.weixin.qq.com/connect/oauth2/authorize",
-    "tokenUrl": "https://api.weixin.qq.com/cgi-bin/token"
+    "tokenUrl": "https://api.weixin.qq.com/sns/oauth2/access_token"
   },
   "weixinPlatform": {
     "appid": "wx2dcf36d849b4a364",
