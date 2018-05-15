@@ -53,10 +53,10 @@ module.exports = function (Schema) {
   Place.statics.batch = function () {
     return this.find({}).exec()
   }
-  Place.statics.getFullInfo = async () => {
-    const GradModel = this.model('grad')
+  Place.methods.getFullInfo = async function () {
+    const GradModel = this.model('Grad')
     let res = this.toJSON()
-    let grad = await GradModel.getById(this._gradId).exec()
+    let grad = await GradModel.findById(this._gradId).exec()
     res.times = grad.getTimes()
     res.prices = grad.getPrices()
     return res

@@ -17,6 +17,6 @@
     "secret": "9348d4997f552a747168d8111d8fa86f"
   },
   "db_url": "mongodb://127.0.0.1:27017/anmoyi",
-  "redis_array": ["127.0.0.1:6379"],
+  "redis_host": "127.0.0.1:6379",
   "h5pay": "pay/v1/h5pay"
 }

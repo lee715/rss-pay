@@ -55,24 +55,23 @@ exports.payIndex = async ctx => {
 }
 
 // { appid: 'wxf52adc6b55f21cd5',
-// 0|app      |   bank_type: 'CFT',
-// 0|app      |   cash_fee: '1',
-// 0|app      |   fee_type: 'CNY',
-// 0|app      |   is_subscribe: 'N',
-// 0|app      |   mch_id: '1500195282',
-// 0|app      |   nonce_str: '4h5bQCjgPh5SD5SqNWrngEMLxw7FoE1i',
-// 0|app      |   openid: 'orer70rQpj1XDnLW0KMsqHQpamGM',
-// 0|app      |   out_trade_no: '5af920137ecb7d5bd8d15b63',
-// 0|app      |   result_code: 'SUCCESS',
-// 0|app      |   return_code: 'SUCCESS',
-// 0|app      |   sign: '2372374FD0694F0E3EE1C839AB7BEDFE',
-// 0|app      |   time_end: '20180514133523',
-// 0|app      |   total_fee: '1',
-// 0|app      |   trade_type: 'JSAPI',
-// 0|app      |   transaction_id: '4200000128201805149185036808' }
+// bank_type: 'CFT',
+// cash_fee: '1',
+// fee_type: 'CNY',
+// is_subscribe: 'N',
+// mch_id: '1500195282',
+// nonce_str: '4h5bQCjgPh5SD5SqNWrngEMLxw7FoE1i',
+// openid: 'orer70rQpj1XDnLW0KMsqHQpamGM',
+// out_trade_no: '5af920137ecb7d5bd8d15b63',
+// result_code: 'SUCCESS',
+// return_code: 'SUCCESS',
+// sign: '2372374FD0694F0E3EE1C839AB7BEDFE',
+// time_end: '20180514133523',
+// total_fee: '1',
+// trade_type: 'JSAPI',
+// transaction_id: '4200000128201805149185036808' }
 exports.payNotify = async ctx => {
   let {wxSucc, wxMsg} = ctx
-  console.log(wxMsg)
   if (wxSrv.sign(wxMsg) !== wxMsg.sign) ctx.throw(403)
   if (wxMsg.result_code !== 'SUCCESS') return wxSucc()
   let _orderId = wxMsg.out_trade_no

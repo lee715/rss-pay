@@ -1,4 +1,5 @@
 const sockSrv = require('../service/socket')
+const redis = require('../service/redis')
 
 module.exports = function (Schema) {
   let deviceSchema
@@ -32,24 +33,20 @@ module.exports = function (Schema) {
       getters: true
     }
   })
-  deviceSchema.virtual('realStatus').get(function () {
-    if (Date.now() - this.statusUpdated < 1000 * 60 * 3) {
-      return this.status
-    } else {
-      return 'fault'
-    }
-  })
-  deviceSchema.statics.isReady = async function () {
-    if (this.realStatus !== 'idle') return false
+  deviceSchema.methods.isReady = async function () {
+    if (await this.getStatus() !== 'idle') return false
     await sockSrv.check(this.uid)
     return true
   }
-  deviceSchema.statics.getPayInfo = async function () {
-    const PlaceModel = this.model('place')
+  deviceSchema.methods.getStatus = function () {
+    return redis.get(`devices:status:${this.uid}`)
+  }
+  deviceSchema.methods.getPayInfo = async function () {
+    const PlaceModel = this.model('Place')
     if (!this._placeId) return null
     let res = this.toJSON()
-    res.status = this.realStatus
-    let place = await PlaceModel.getById(this._placeId).exec()
+    res.status = await this.getStatus()
+    let place = await PlaceModel.findById(this._placeId).exec()
     res.placeName = place.name
     let placeFullInfo = await place.getFullInfo()
     res.times = placeFullInfo.times

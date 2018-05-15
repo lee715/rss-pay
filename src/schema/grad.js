@@ -18,11 +18,11 @@ module.exports = function (Schema) {
     return this.find({}).exec()
   }
 
-  Grad.statics.getTimes = function () {
+  Grad.methods.getTimes = function () {
     return this.time.split(',')
   }
 
-  Grad.statics.getPrices = function () {
+  Grad.methods.getPrices = function () {
     return this.price.split(',')
   }
 

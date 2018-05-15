@@ -25,13 +25,10 @@ ejs(app, {
   debug: false
 })
 
-const start = async () => {
-  require('./service/mongo')
-  require('./service/redis')
-  const router = require('./router')
-  app
-    .use(router.routes())
-    .use(router.allowedMethods())
-  app.listen(config.port, () => console.log(`listen port ${config.port}`))
-}
-start()
+require('./service/mongo')
+require('./service/redis')
+const router = require('./router')
+app
+  .use(router.routes())
+  .use(router.allowedMethods())
+app.listen(config.port, () => console.log(`listen port ${config.port}`))

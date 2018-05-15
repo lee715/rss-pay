@@ -37,7 +37,7 @@ module.exports = function (Schema) {
     return this.create(data)
   }
 
-  Order.statics.switchPayStatus = function (status) {
+  Order.methods.switchPayStatus = function (status) {
     switch (status) {
       case 1:
         return this.update({status: 'SUCCESS'}).exec()
@@ -46,7 +46,7 @@ module.exports = function (Schema) {
     }
   }
 
-  Order.statics.switchDeviceStatus = function (status) {
+  Order.methods.switchDeviceStatus = function (status) {
     switch (status) {
       case 1:
         return this.update({serviceStatus: 'STARTED'}).exec()
@@ -55,7 +55,7 @@ module.exports = function (Schema) {
     }
   }
 
-  Order.statics.isPayed = function () {
+  Order.methods.isPayed = function () {
     return this.status === 'SUCCESS'
   }
 
