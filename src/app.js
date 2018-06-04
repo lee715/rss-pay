@@ -14,7 +14,7 @@ const app = new Koa()
 
 app
   .use(bodyParser())
-  .use(staticSrv({rootDir: 'static', rootPath: '/static'}))
+  .use(staticSrv({rootDir: 'static', rootPath: '/pay/static'}))
   .use(rawMidd)
 
 ejs(app, {

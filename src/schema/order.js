@@ -39,6 +39,8 @@ module.exports = function (Schema) {
 
   Order.methods.switchPayStatus = function (status) {
     switch (status) {
+      case 2:
+        return this.update({status: 'REFUND'}).exec()
       case 1:
         return this.update({status: 'SUCCESS'}).exec()
       case 0:

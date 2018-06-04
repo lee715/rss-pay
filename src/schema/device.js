@@ -7,10 +7,6 @@ module.exports = function (Schema) {
     uid: String,
     name: String,
     _placeId: Schema.Types.ObjectId,
-    status: {
-      type: String,
-      'default': 'init'
-    },
     disabled: {
       type: Boolean,
       'default': false
@@ -20,10 +16,6 @@ module.exports = function (Schema) {
       'default': 'normal'
     },
     created: {
-      type: Date,
-      'default': Date.now
-    },
-    statusUpdated: {
       type: Date,
       'default': Date.now
     }

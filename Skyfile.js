@@ -2,7 +2,7 @@
 sneaky('ay', function () {
   this.description = 'Deploy to dev environment'
   this.user = 'root'
-  this.host = '47.74.252.32'
+  this.host = '47.96.158.74'
   this.path = '~/server/bk-wx/'
   this.filter = `
 + config

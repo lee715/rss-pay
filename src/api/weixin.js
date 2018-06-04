@@ -12,7 +12,7 @@ exports.getAuth = async ctx => {
     response_type: 'code',
     scope: 'snsapi_base',
     state: 'snsapi_base',
-    redirect_uri: `${config.host}/api/oauthcode?uid=${uid}`
+    redirect_uri: `${config.host}/wx/oauthcode?uid=${uid}`
   }
   ctx.redirect(`${config.weixin.authUrl}?${qs.stringify(data)}`)
 }
@@ -91,6 +91,7 @@ exports.payNotify = async ctx => {
     e.type = 'payNotify-error'
     console.error(e)
     await wxSrv.refund(_orderId, order.money)
+    await order.switchPayStatus(2)
     wxSucc()
   }
 }

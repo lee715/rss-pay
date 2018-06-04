@@ -1,7 +1,7 @@
 {
-  "port": 80,
+  "port": 3000,
   "host": "http://www.ups-aiyan.com",
-  "ip": "47.74.252.32",
+  "ip": "47.96.158.74",
   "weixin": {
     "mch_id": "1500195282",
     "appid": "wxf52adc6b55f21cd5",

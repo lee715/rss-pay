@@ -15,7 +15,7 @@
   header{
     display: block;
     height: 200px;
-    background: url('/static/image/beijing.png');
+    background: url('/pay/static/image/beijing.png');
     background-size: 100% 100%;
     padding: 0px;
     color: white;
@@ -41,7 +41,7 @@
     float: left
   }
   #main{
-    background-image:url('/static/image/beijing1.png');
+    background-image:url('/pay/static/image/beijing1.png');
     background-position: bottom;
     background-size: 100%;
     height: 100%;
@@ -70,7 +70,7 @@
   }
   #main .item .good {
     display: none;
-    background: url('/static/image/muzhi.png');
+    background: url('/pay/static/image/muzhi.png');
     background-size: 100% 100%;
     width: 20px;
     height:20px;
@@ -188,7 +188,7 @@
     <% }else { %>
     <div id="error" class="notice fail">设备异常,请使用其他设备或联系客服。客服电话：4008301332。</div>
     <% } %>
-<script type="text/javascript" src="/static/js/jquery.js"></script>
+<script type="text/javascript" src="/pay/static/js/jquery.js"></script>
 <script type="text/javascript">
   var openId = "<%=openId%>";
   var uid = "<%=uid%>";
@@ -199,7 +199,7 @@
   })
   function pay(){
     $.ajax({
-      url: "/api/wx/prepay",
+      url: "/wx/wx/prepay",
       method: 'get',
       data: {
         openId: openId,
@@ -227,14 +227,6 @@
     $('#pay').click(function(){
       pay();
       return false;
-    })
-  }
-
-  function send(data){
-    $.ajax({
-      url: "/api/test",
-      method: 'get',
-      data: data
     })
   }
 
