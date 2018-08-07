@@ -8,23 +8,30 @@ const listeners = {}
 subRedis.on('message', (ch, msg) => {
   msg = JSON.parse(msg)
   let {uid, cmd} = msg
+  let err = null
   if (!uid || !cmd) return null
+  if (msg.errmsg) err = new Error(msg.errmsg)
   let lisKey = `${cmd}:${ch}`
   let lsns = listeners[lisKey]
   if (!lsns) return null
   for (let lsn of lsns) {
-    lsn(msg)
+    lsn(err, msg)
   }
 })
 
 exports.start = async (uid, time) => {
   return new Promise((resolve, reject) => {
-    addListener({
+    const msg = {
       cmd: 'start',
       uid: uid,
       time: time
-    }, resolve)
+    }
+    addListener(msg, (err, rt) => {
+      if (err) return reject(err)
+      resolve(rt)
+    })
     setTimeout(() => {
+      clearListener(msg)
       reject(new Error('StartTimeout'))
     }, 5000)
   })
@@ -32,11 +39,16 @@ exports.start = async (uid, time) => {
 
 exports.check = async (uid) => {
   return new Promise((resolve, reject) => {
-    addListener({
+    const msg = {
       cmd: 'check',
       uid: uid
-    }, resolve)
+    }
+    addListener(msg, (err, rt) => {
+      if (err) return reject(err)
+      resolve(rt)
+    })
     setTimeout(() => {
+      clearListener(msg)
       reject(new Error('CheckTimeout'))
     }, 5000)
   })
@@ -50,4 +62,10 @@ const addListener = (msg, cb) => {
   let lisKey = `${msg.cmd}:${ckey}`
   if (!listeners[lisKey]) listeners[lisKey] = []
   listeners[lisKey].push(cb)
+}
+
+const clearListener = (msg) => {
+  let ckey = `c:devices@${msg.uid}`
+  let lisKey = `${msg.cmd}:${ckey}`
+  delete listeners[lisKey]
 }

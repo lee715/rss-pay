@@ -1,12 +1,12 @@
 {
   "port": 3000,
-  "host": "http://www.ups-aiyan.com",
-  "ip": "47.96.158.74",
+  "host": "http://www.iheimayi.cn",
+  "ip": "47.106.70.32",
   "weixin": {
-    "mch_id": "1500195282",
-    "appid": "wxf52adc6b55f21cd5",
-    "key": "bc49dcee7e7ac85df1d2ef6f758560ae",
-    "secret": "bc49dcee7e7ac85df1d2ef6f758560ae",
+    "mch_id": "1497068872",
+    "appid": "wxeda7ea419cb00cb5",
+    "key": "2c464448b6ab452f97ad000d02b64dd0",
+    "secret": "9348d4997f552a747168d8111d8fa86f",
     "total_fee": 5,
     "body": "按摩椅",
     "authUrl": "https://open.weixin.qq.com/connect/oauth2/authorize",
