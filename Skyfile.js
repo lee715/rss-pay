@@ -36,7 +36,7 @@ sneaky('hm', function () {
 + app.js
 - *
 `
-  this.after('yarn && pm2 restart app')
+  this.after('yarn && pm2 restart weixin')
   this.overwrite = true
   this.nochdir = true
 })

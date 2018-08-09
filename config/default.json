@@ -6,15 +6,11 @@
     "mch_id": "1497068872",
     "appid": "wxeda7ea419cb00cb5",
     "key": "2c464448b6ab452f97ad000d02b64dd0",
-    "secret": "9348d4997f552a747168d8111d8fa86f",
+    "secret": "fc96678eb35c90f5571b197793e9b1ee",
     "total_fee": 5,
     "body": "按摩椅",
     "authUrl": "https://open.weixin.qq.com/connect/oauth2/authorize",
     "tokenUrl": "https://api.weixin.qq.com/sns/oauth2/access_token"
-  },
-  "weixinPlatform": {
-    "appid": "wx2dcf36d849b4a364",
-    "secret": "9348d4997f552a747168d8111d8fa86f"
   },
   "db_url": "mongodb://127.0.0.1:27017/anmoyi",
   "redis_host": "127.0.0.1:6379",

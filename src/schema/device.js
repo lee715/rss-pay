@@ -27,7 +27,7 @@ module.exports = function (Schema) {
   })
   deviceSchema.methods.isReady = async function () {
     if (await this.getStatus() !== 'idle') return false
-    await sockSrv.check(this.uid)
+    // await sockSrv.check(this.uid)
     return true
   }
   deviceSchema.methods.getStatus = function () {

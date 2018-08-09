@@ -26,6 +26,7 @@ exports.getCode = async ctx => {
     grant_type: 'authorization_code'
   }
   let rt = await urllib.request(`${config.weixin.tokenUrl}?${qs.stringify(data)}`, {dataType: 'json'})
+  if (rt.data.errcode) ctx.throw(400, rt.data.errmsg)
   ctx.redirect(`${config.host}/${config.h5pay}?uid=${uid}&openId=${rt.data.openid}`)
 }
 
@@ -33,7 +34,9 @@ exports.getPreArgs = async ctx => {
   let {uid, openId, pt} = ctx.query
   let [money, time] = pt.split(':')
   let device = await db.device.findByUid(uid)
-  let {_placeId, _agentId} = device
+  let {_placeId} = device
+  let place = await db.place.findById(_placeId).exec()
+  let {_agentId} = place
   let order = await db.order.init({money, time, openId, uid, _placeId, _agentId})
   let args = await wxSrv.getBrandWCPayRequestParams(openId, `${order._id}`, money * 100)
   ctx.body = args
@@ -41,6 +44,7 @@ exports.getPreArgs = async ctx => {
 
 exports.payIndex = async ctx => {
   let {uid, openId} = ctx.query
+  console.log('payindex', uid, openId)
   let device = await db.device.findByUid(uid)
   let payInfo = await device.getPayInfo()
   payInfo.openId = openId
